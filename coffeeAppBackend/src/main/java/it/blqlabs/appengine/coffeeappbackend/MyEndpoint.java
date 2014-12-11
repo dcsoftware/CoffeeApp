@@ -31,7 +31,7 @@ import java.util.List;
 
 public class MyEndpoint {
 
-    @ApiMethod(name = "storeClientTransaction")
+    @ApiMethod(name = "storeClientTransaction", httpMethod = ApiMethod.HttpMethod.POST)
     public ResponseBean storeClientTransaction(TransactionBean bean) {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
         Transaction txn = datastoreService.beginTransaction();
@@ -81,7 +81,7 @@ public class MyEndpoint {
         return response;
     }
 
-    @ApiMethod(name = "getTodayKey")
+    @ApiMethod(name = "getTodayKey", httpMethod = ApiMethod.HttpMethod.GET)
     public KeyBean getTodayKey(UserBean bean) {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 

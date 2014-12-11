@@ -22,6 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import it.blqlabs.android.coffeeapp.backend.GetSecureKeyAsyncTask;
 import it.blqlabs.android.coffeeapp.backend.ResetAccountAsyncTask;
@@ -38,6 +42,8 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     private static Tag mTag;
     private static Context mContext;
     SharedPreferences mSharedPref;
+    Calendar c = Calendar.getInstance();
+    SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
 
     public Messenger mMessenger = new Messenger(new MessageHandler(this));
     private class MessageHandler extends Handler {
@@ -73,9 +79,20 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         mMainActivity = this;
         mContext = this.getApplicationContext();
         isFirstRun();
+        getSecureKey();
+    }
 
-        new GetSecureKeyAsyncTask().execute(this);
+    public void getSecureKey() {
 
+        String storedDate = mSharedPref.getString(Constants.PREF_KEY_DATE, "00000000");
+        String currentDate = format.format(c.getTime());
+
+        if(!storedDate.equals(currentDate)) {
+            Toast.makeText(this, "GETTING KEY", Toast.LENGTH_SHORT).show();
+            new GetSecureKeyAsyncTask().execute(this);
+        } else {
+            Toast.makeText(this, "KEY already stored:" + mSharedPref.getString(Constants.PREF_SECRET_KEY, "00000000"), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static MainActivity getMainActivity() {

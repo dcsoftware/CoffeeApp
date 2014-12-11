@@ -66,6 +66,7 @@ public class ComService extends Service {
     private Constants.State cardState;
     private SharedPreferences cardSetting;
     private SharedPreferences.Editor settingEditor;
+    private SharedPreferences prefs;
     private byte[] command;
     private byte[] result;
     private byte[] data;
@@ -77,7 +78,7 @@ public class ComService extends Service {
 
     private SQLiteDatabase db;
 
-    private String secret = "ABCDEFGHIJ";
+    private String secret;// = "ABCDEFGHIJ";
 
     private OtpGenerator mOtpGenerator;
 
@@ -88,6 +89,9 @@ public class ComService extends Service {
         @Override
         public void handleMessage(Message msg) {
             Context context = MainActivity.getContext();
+            prefs = context.getSharedPreferences(Constants.M_SHARED_PREF, MODE_PRIVATE);
+            secret = prefs.getString(Constants.PREF_SECRET_KEY, null);
+
             mOtpGenerator = new OtpGenerator(secret);
             cardSetting = context.getSharedPreferences(Constants.USER_SHARED_PREF, Context.MODE_PRIVATE);
             settingEditor = cardSetting.edit();
