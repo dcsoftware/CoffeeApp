@@ -1,7 +1,8 @@
 package it.blqlabs.android.coffeeapp;
 
 
-import android.app.Fragment;
+import android.nfc.tech.Ndef;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +21,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
+
+import it.blqlabs.android.coffeeapp.backend.GetSecureKeyAsyncTask;
+import it.blqlabs.android.coffeeapp.backend.ResetAccountAsyncTask;
+import it.blqlabs.android.coffeeapp.database.TransactionsDBOpenHelper;
 
 
 public class MainActivity extends FragmentActivity implements CardReader.ActionCallback{
@@ -30,6 +37,7 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     private static MainActivity mMainActivity;
     private static Tag mTag;
     private static Context mContext;
+    SharedPreferences mSharedPref;
 
     public Messenger mMessenger = new Messenger(new MessageHandler(this));
     private class MessageHandler extends Handler {
@@ -50,10 +58,13 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fragment = new MainFragment();
+        mSharedPref = getSharedPreferences(Constants.M_SHARED_PREF, MODE_PRIVATE);
+
+
         if (savedInstanceState == null) {
-            fragment = new MainFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
+                    .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
 
@@ -63,6 +74,8 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         mContext = this.getApplicationContext();
         isFirstRun();
 
+        new GetSecureKeyAsyncTask().execute(this);
+
     }
 
     public static MainActivity getMainActivity() {
@@ -70,7 +83,6 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     }
 
     public void isFirstRun() {
-        SharedPreferences mSharedPref = getSharedPreferences(Constants.M_SHARED_PREF, MODE_PRIVATE);
         if (mSharedPref.getBoolean(Constants.IS_FIRST_RUN, true)) {
 
             SharedPreferences userSharedPref = getSharedPreferences(Constants.USER_SHARED_PREF, MODE_PRIVATE);
@@ -102,8 +114,10 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     private void processIntent(Intent intent) {
         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Log.i(TAG, "tech discovered");
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
 
             mTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
             if(mTag != null) {
                 Log.i(TAG, "Tag found");
                 /*reader = new CardReader(this, mTag, this);
@@ -127,7 +141,7 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
 
     @Override
     public void onActionReceived(String text) {
-        fragment.updateText(text);
+        fragment.updateLogText(text);
     }
 
     @Override
@@ -148,6 +162,17 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_reset) {
+            SharedPreferences cardSetting = getSharedPreferences(Constants.USER_SHARED_PREF, Context.MODE_PRIVATE);
+            cardSetting.edit().putString(Constants.USER_CREDIT, "0").commit();
+            new TransactionsDBOpenHelper(getContext()).reset();
+            new ResetAccountAsyncTask().execute(new Pair<Context, String>(this, mSharedPref.getString(Constants.USER_ID,"")));
+            return true;
+        }
+        if (id == R.id.action_history) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new HistoryFragment()).commit();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -155,7 +180,9 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public class PlaceholderFragment extends Fragment {
+
+        private String type = "main";
 
         public PlaceholderFragment() {
         }
@@ -163,8 +190,16 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            SharedPreferences cardSetting = getSharedPreferences(Constants.USER_SHARED_PREF, Context.MODE_PRIVATE);
+
+            View rootView = inflater.inflate(R.layout.fragment_start, container, false);
+            TextView text = (TextView) rootView.findViewById(R.id.creTV);
+            text.setText(cardSetting.getString(Constants.USER_CREDIT, ""));
             return rootView;
+        }
+
+        public String getType() {
+            return type;
         }
     }
 }

@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.blqlabs.android.coffeeapp" >
 
+    <uses-permission android:name="android.permission.NFC" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -10,8 +18,8 @@
         <activity
             android:name="it.blqlabs.android.coffeeapp.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,12 +39,13 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+
+        <provider
+            android:name="it.blqlabs.android.coffeeapp.database.TransactionProvider"
+            android:authorities="it.blqlabs.android.coffeeapp.provider"
+            android:enabled="true"
+            android:exported="false" >
+        </provider>
     </application>
-
-    <uses-permission android:name="android.permission.NFC" />
-
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="true" />
 
 </manifest>
