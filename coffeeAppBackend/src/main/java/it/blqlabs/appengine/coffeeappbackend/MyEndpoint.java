@@ -6,6 +6,7 @@
 
 package it.blqlabs.appengine.coffeeappbackend;
 
+import com.google.api.server.spi.Constant;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -81,7 +82,11 @@ public class MyEndpoint {
         return response;
     }
 
-    @ApiMethod(name = "getTodayKey", httpMethod = ApiMethod.HttpMethod.GET)
+    @ApiMethod(name = "getTodayKey", httpMethod = ApiMethod.HttpMethod.GET, scopes = {Constants.EMAIL_SCOPE},
+                clientIds = {Constants.WEB_CLIENT_ID,
+                            Constants.ANDROID_ID,
+                             Constant.API_EXPLORER_CLIENT_ID},
+                audiences = {Constants.ANDROID_AUDIENCE})
     public KeyBean getTodayKey(UserBean bean) {
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 
@@ -99,6 +104,21 @@ public class MyEndpoint {
         responseKey.setDate((String) results.get(0).getProperty(Constants.PROPERTY_DATE));
 
         return responseKey;
+    }
+
+    @ApiMethod(name = "registerNewUser")
+    public UserBean registerNewUser(UserBean user) {
+
+
+
+
+
+        return user;
+    }
+
+    private String generateUserId() {
+
+        return null;
     }
 
 }

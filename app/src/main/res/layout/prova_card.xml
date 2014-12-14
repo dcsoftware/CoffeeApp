@@ -3,10 +3,18 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <view
+    <CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         class="android.support.v7.widget.CardView"
         android:id="@+id/view"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CIAO"/>
+
+    </CardView>
+
 </LinearLayout>

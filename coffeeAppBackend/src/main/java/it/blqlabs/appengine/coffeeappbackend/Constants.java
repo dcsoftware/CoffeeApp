@@ -6,6 +6,9 @@ package it.blqlabs.appengine.coffeeappbackend;
 public class Constants {
 
     public static final String PROPERTY_USER_ID = "user_id";
+    public static final String PROPERTY_USER_CREDIT = "user_credit";
+    public static final String PROPERTY_USER_EMAIL = "user_email";
+    public static final String PROPERTY_LAST_SEEN = "last_seen";
     public static final String PROPERTY_TIMESTAMP = "timestamp";
     public static final String PROPERTY_AMOUNT = "amount";
     public static final String PROPERTY_CONFIRMED = "confirmed";
@@ -25,4 +28,10 @@ public class Constants {
     public static final String ENTITY_NAME_MACHINE_TRANSACTION = "MachineTransacion";
     public static final String ENTITY_NAME_KEY = "SecureKey";
     public static final String ENTITY_NAME_EVENT = "Event";
+    public static final String ENTITY_NAME_USER = "User";
+
+    public static final String WEB_CLIENT_ID = "824332171015-s7c5iqhlgki64gdcs19ne4ssnn9adtrg.apps.googleusercontent.com";
+    public static final String ANDROID_ID = "824332171015-dnnfuu28nvcud4rs9pjome3a6n50sv5o.apps.googleusercontent.com";
+    public static final String ANDROID_AUDIENCE = WEB_CLIENT_ID;
+    public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
 }

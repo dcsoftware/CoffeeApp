@@ -8,10 +8,12 @@ import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 
 import java.io.IOException;
 
 import it.blqlabs.android.coffeeapp.Constants;
+import it.blqlabs.android.coffeeapp.MainActivity;
 import it.blqlabs.appengine.coffeeappbackend.myApi.MyApi;
 import it.blqlabs.appengine.coffeeappbackend.myApi.model.KeyBean;
 
@@ -22,15 +24,15 @@ public class GetSecureKeyAsyncTask extends AsyncTask<Context, Void, KeyBean> {
 
     private MyApi myApiService;
     private Context context;
+    private GoogleAccountCredential credential;
+
 
     @Override
     protected KeyBean doInBackground(Context... params) {
-
-        MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null);
+        credential = MainActivity.getCredential();
+        MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
         myApiService = builder.build();
         context = params[0];
-
-        String[] response = new String[2];
 
         KeyBean responseBean = new KeyBean();
 

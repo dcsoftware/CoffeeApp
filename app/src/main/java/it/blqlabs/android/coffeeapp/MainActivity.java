@@ -1,7 +1,8 @@
 package it.blqlabs.android.coffeeapp;
 
 
-import android.nfc.tech.Ndef;
+
+import android.accounts.AccountManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
@@ -24,6 +25,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -35,8 +38,11 @@ import it.blqlabs.android.coffeeapp.database.TransactionsDBOpenHelper;
 public class MainActivity extends FragmentActivity implements CardReader.ActionCallback{
 
     public static final String TAG = "MainActivity";
+    private static final int REQUEST_ACCOUNT_PICKER = 2;
+    private static GoogleAccountCredential credential;
     public CardReader reader;
     public MainFragment fragment;
+    private String accountName;
 
     private static MainActivity mMainActivity;
     private static Tag mTag;
@@ -66,7 +72,13 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         setContentView(R.layout.activity_main);
         fragment = new MainFragment();
         mSharedPref = getSharedPreferences(Constants.M_SHARED_PREF, MODE_PRIVATE);
-
+        credential = GoogleAccountCredential.usingAudience(this, "server:client_id:824332171015-s7c5iqhlgki64gdcs19ne4ssnn9adtrg.apps.googleusercontent.com");
+        setAccountName(mSharedPref.getString("ACCOUNT_NAME", null));
+        if(credential.getSelectedAccountName() != null) {
+            Toast.makeText(this, "Logged in with: " + credential.getSelectedAccountName(), Toast.LENGTH_LONG).show();
+        } else {
+            chooseAccount();
+        }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -80,6 +92,35 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         mContext = this.getApplicationContext();
         isFirstRun();
         getSecureKey();
+    }
+
+    private void setAccountName(String accountName) {
+        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+        prefsEditor.putString("ACCOUNT_NAME", accountName);
+        prefsEditor.commit();
+        credential.setSelectedAccountName(accountName);
+        this.accountName = accountName;
+    }
+
+    void chooseAccount() {
+        startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_ACCOUNT_PICKER:
+                if(data != null && data.getExtras() != null) {
+                    String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
+                    if(accountName != null) {
+                        setAccountName(accountName);
+                        SharedPreferences.Editor prefsEditor = mSharedPref.edit();
+                        prefsEditor.putString("ACCOUNT_NAME", accountName);
+                        prefsEditor.commit();
+                    }
+                }
+        }
     }
 
     public void getSecureKey() {
@@ -98,6 +139,8 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
     public static MainActivity getMainActivity() {
         return mMainActivity;
     }
+
+    public static GoogleAccountCredential getCredential() {return credential;}
 
     public void isFirstRun() {
         if (mSharedPref.getBoolean(Constants.IS_FIRST_RUN, true)) {

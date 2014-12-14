@@ -18,6 +18,11 @@ public class Constants {
     public static final String IS_FIRST_RUN = "isFirstRun";
     public static final String OTP_KEY = "abcdefghilmnopqrstuvz";
 
+    public static final String WEB_CLIENT_ID = "824332171015-s7c5iqhlgki64gdcs19ne4ssnn9adtrg.apps.googleusercontent.com";
+    public static final String ANDROID_ID = "824332171015-dnnfuu28nvcud4rs9pjome3a6n50sv5o.apps.googleusercontent.com";
+    public static final String ANDROID_AUDIENCE = WEB_CLIENT_ID;
+    public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+
     public static enum State {
         DISCONNECTED("disconnected", 0), CONNECTED("connected", 1), APP_SELECTED("app_selected", 2), AUTHENTICATED("authenticated", 3),
         LOGGED_IN("logged_in", 4), READING_STATUS("reading_status", 5), DATA_UPDATED("data_updated", 6),
