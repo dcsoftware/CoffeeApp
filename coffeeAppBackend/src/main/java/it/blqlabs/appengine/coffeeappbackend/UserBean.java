@@ -42,4 +42,8 @@ public class UserBean {
         this.userId = userId;
     }
 
+    public String toString() {
+        return "userId=" + userId + ",userEmail=" + userEmail + ",userCredit=" + userCredit + ",lastSeen=" + lastSeen;
+    }
+
 }

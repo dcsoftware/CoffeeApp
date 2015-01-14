@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * An endpoint class we are exposing
@@ -31,6 +32,9 @@ import java.util.List;
                 ownerName = "coffeeappbackend.appengine.blqlabs.it", packagePath = ""))
 
 public class MyEndpoint {
+
+
+    private static final Logger log = Logger.getLogger(MyEndpoint.class.getName());
 
     @ApiMethod(name = "storeClientTransaction", httpMethod = ApiMethod.HttpMethod.POST)
     public ResponseBean storeClientTransaction(TransactionBean bean) {
@@ -53,6 +57,9 @@ public class MyEndpoint {
         ResponseBean response = new ResponseBean();
         response.setTransactionId(bean.getId());
         response.setConfirmed(true);
+
+        log.info("Request: " + bean.toString());
+        log.info("Response: " + response.toString());
 
         return response;
 
@@ -102,6 +109,9 @@ public class MyEndpoint {
         KeyBean responseKey = new KeyBean();
         responseKey.setKey((String) results.get(0).getProperty(Constants.PROPERTY_KEY));
         responseKey.setDate((String) results.get(0).getProperty(Constants.PROPERTY_DATE));
+
+        log.info("Request: " + bean.toString());
+        log.info("Response: " + responseKey.toString());
 
         return responseKey;
     }

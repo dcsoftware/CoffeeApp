@@ -109,7 +109,7 @@ public class ComService extends Service {
             if(isoDep != null) {
  
                 try {
-                    isoDep.setTimeout(10000);
+                    isoDep.setTimeout(20000);
                     isoDep.connect();
                     cardState = Constants.State.CONNECTED;
                     messenger.send(Message.obtain(null, cardState.ordinal(), cardState));
@@ -266,7 +266,7 @@ public class ComService extends Service {
                                         cardState = Constants.State.DATA_UPDATED;
                                     }
                                 } catch (IOException e) {
-                                    Log.d("TAG", "reading failed");
+                                    Log.d("TAG", e.getMessage() + new String(result));
                                 }
                                 break;
                             case DATA_UPDATED:

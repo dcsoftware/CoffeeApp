@@ -23,4 +23,9 @@ public class ResponseBean {
     public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
     }
+
+    public String toString() {
+        return "transactionId=" + transactionId + ",confirmed=" + confirmed;
+    }
+
 }

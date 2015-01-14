@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Transaction;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
  * Created by davide on 20/11/14.
  */
 public class ArduEventLogger extends HttpServlet {
+
+    private static final Logger log = Logger.getLogger(ArduEventLogger.class.getName());
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -56,7 +59,10 @@ public class ArduEventLogger extends HttpServlet {
                 }
                 break;
         }
+
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         resp.getWriter().println("OK");
+        log.info(req.toString());
+        log.info(resp.toString());
     }
 }

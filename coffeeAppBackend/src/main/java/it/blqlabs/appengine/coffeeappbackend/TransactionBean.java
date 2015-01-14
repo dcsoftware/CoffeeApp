@@ -52,4 +52,8 @@ public class TransactionBean {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String toString() {
+        return "transactionID=" + id + ", userId=" + userId + ",timestamp=" + timestamp + ",amount=" + amount;
+    }
 }
