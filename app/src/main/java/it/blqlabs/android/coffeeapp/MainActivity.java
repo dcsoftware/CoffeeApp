@@ -72,13 +72,13 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         setContentView(R.layout.activity_main);
         fragment = new MainFragment();
         mSharedPref = getSharedPreferences(Constants.M_SHARED_PREF, MODE_PRIVATE);
-        credential = GoogleAccountCredential.usingAudience(this, "server:client_id:824332171015-s7c5iqhlgki64gdcs19ne4ssnn9adtrg.apps.googleusercontent.com");
-        setAccountName(mSharedPref.getString("ACCOUNT_NAME", null));
-        if(credential.getSelectedAccountName() != null) {
-            Toast.makeText(this, "Logged in with: " + credential.getSelectedAccountName(), Toast.LENGTH_LONG).show();
-        } else {
-            chooseAccount();
-        }
+        //credential = GoogleAccountCredential.usingAudience(this, "server:client_id:824332171015-s7c5iqhlgki64gdcs19ne4ssnn9adtrg.apps.googleusercontent.com");
+        //setAccountName(mSharedPref.getString("ACCOUNT_NAME", null));
+        //if(credential.getSelectedAccountName() != null) {
+        //    Toast.makeText(this, "Logged in with: " + credential.getSelectedAccountName(), Toast.LENGTH_LONG).show();
+        //} else {
+        //    chooseAccount();
+        //}
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -91,7 +91,7 @@ public class MainActivity extends FragmentActivity implements CardReader.ActionC
         mMainActivity = this;
         mContext = this.getApplicationContext();
         isFirstRun();
-        getSecureKey();
+        //getSecureKey();
     }
 
     private void setAccountName(String accountName) {
